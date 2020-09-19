@@ -1,4 +1,4 @@
-# A React Bluetooth POC App
+# React Web-Bluetooth controller
 - A POC React application that utilizes the web bluetooth api. It is mostly for learning purpose.
 - Created this application to understand the features of React as well as a new way of utilizing the bluetooth functionality
 - It would be fun to utilize the bluetooth features in a different way. 
@@ -13,10 +13,6 @@
 npm install
 npm start
 ```
-
-## Application Functionality
-- Click on the 'Bluetooth' switch for detecting bluetooth devices
-- Select a device. The application will display all information pertaining to the device.
 
 ## NOTE
 - This is work in progress
