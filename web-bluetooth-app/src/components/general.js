@@ -1,4 +1,5 @@
-import { Card, CardContent, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, withStyles } from '@material-ui/core';
+import { Accordion, AccordionDetails, AccordionSummary, Card, CardContent, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography, withStyles } from '@material-ui/core';
+import { ExpandMore } from '@material-ui/icons';
 import React from 'react';
 import { connect } from 'react-redux'
 import { setStatus } from '../actions/application.action';
@@ -28,7 +29,6 @@ const useStyles = (theme) => ({
         paddingTop: theme.spacing(2)
     },
     messageCard: {
-        width: '40%',
         textAlign: 'center'
     },
     messageCardContent: {
@@ -49,15 +49,16 @@ const useStyles = (theme) => ({
     cardContainer: {
         margin: theme.spacing(2)
     },
-    fullContainer: {
-        width: '100%'
-    },
     alignCenter: {
         display: 'flex',
         justifyContent: 'center',
         verticalAlign: 'middle',
         textAlign: 'center'
-    }
+    },
+    accordionHeading: {
+        fontSize: '1rem',
+        fontWeight:'bold'
+      },
 })
 class GeneralBluetoothInfo extends React.Component {
     constructor(props) {
@@ -72,16 +73,17 @@ class GeneralBluetoothInfo extends React.Component {
         // Check if bluetooth is enabled, if not enabled dont render anything
         if (!this.props.bluetoothStatus)
             return;
-
+        // Get all the properties of the bluetooth device
         if (this.props.device !== undefined && this.props.device !== null && !this.props.device.gatt.connected) {
             this.bluetoothAPI.getAllProperties(this.props.device)
                 .then(device => {
                     this.setState({ bluetoothDevice: device });
-                    this.props.dispatch(setStatus(SUCCESS, "Device has been paired"))
+                    this.props.dispatch(setStatus(SUCCESS, "Device has been paired"));
                 }).catch(err => {
                     this.props.dispatch(setStatus(ERROR, err.message));
                 });
         }
+
     }
 
     constructRows = (attributes) => {
@@ -121,6 +123,7 @@ class GeneralBluetoothInfo extends React.Component {
         const tables = [];
         mainCategory.forEach((category) => {
             tables.push(
+                <Grid key={category} item lg={4} md={6} sm={12}>
                 <Card key={category} className={classes.elementCard}>
                     <CardContent className={classes.elementCardContent}>
                         <div className={classes.cardContainer}>
@@ -135,6 +138,7 @@ class GeneralBluetoothInfo extends React.Component {
                         </div>
                     </CardContent>
                 </Card>
+                </Grid>
             );
         });
         return tables;
@@ -143,11 +147,15 @@ class GeneralBluetoothInfo extends React.Component {
     constructNoDeviceConnected(classes) {
         if (!this.props.bluetoothStatus) {
             return (
-                <Card className={classes.messageCard}>
-                    <CardContent className={classes.messageCardContent}>
-                        No Device has been added
-                    </CardContent>
-                </Card>
+                <Grid container spacing={0} direction="column" alignItems="center" justify="center" >
+                    <Grid item style={{minWidth:'50%'}}>
+                        <Card className={classes.messageCard}>
+                            <CardContent className={classes.messageCardContent}>
+                                No Device has been added
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                </Grid>
             )
         }
     }
@@ -157,14 +165,19 @@ class GeneralBluetoothInfo extends React.Component {
         this.getBluetoothDevice();
         return (
             <div className={classes.root}>
-                <div className={`${classes.fullContainer} ${classes.alignCenter}`}>
+                <div className={` ${classes.alignCenter}`}>
                     {this.constructNoDeviceConnected(classes)}
                 </div>
-                <Grid container spacing={3}>
-                    <Grid item lg={4} md={6} sm={12}>
-                        {this.constructTable(classes)}
-                    </Grid>
-                </Grid>
+                <Accordion style={{display : this.props.bluetoothStatus ? 'block' : 'none'}}>
+                    <AccordionSummary expandIcon={<ExpandMore/>}>
+                        <Typography className={classes.accordionHeading}>Bluetooth Device Information</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <Grid container spacing={3}>
+                            {this.constructTable(classes)}
+                        </Grid>
+                    </AccordionDetails>
+                </Accordion>
             </div>
         )
     }
