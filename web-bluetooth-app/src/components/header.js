@@ -4,6 +4,7 @@ import { FormControlLabel, FormGroup, Switch } from '@material-ui/core';
 import { RequestOption, BluetoothAPI, REQUEST_OPTION_NAME } from '../utils/bluetooth';
 import { addBluetoothDevice, turnOnBluetooth, turnOffBluetooth, removeBluetoothDevice } from '../actions/bluetooth.action';
 import { connect } from 'react-redux';
+import { contentLoadInProgress, contentLoadNotInProgress } from '../actions/application.action';
 
 const useStyles = theme => ({
     root: {
@@ -38,9 +39,27 @@ class Header extends React.Component {
         this.props.dispatch(turnOffBluetooth())
     }
     
+        linearLoading = (flag) => {
+        if(flag){
+            this.props.dispatch(contentLoadInProgress());
+        } else{
+            this.props.dispatch(contentLoadNotInProgress());
+        }
+    }
+
+    linearLoading = (flag) => {
+        if(flag){
+            this.props.dispatch(contentLoadInProgress());
+        } else{
+            this.props.dispatch(contentLoadNotInProgress());
+        }
+    }
+
+
     toggleChecked = () => {
         this.setState({ checked: !this.state.checked },()=>{
             if (this.state.checked) {
+                this.linearLoading(true);
                 this.requestDevice();
             } else{
                 this.removeBluetooth();
@@ -52,9 +71,11 @@ class Header extends React.Component {
         this.bluetoothAPI.requestDevice(new RequestOption(REQUEST_OPTION_NAME.ALL))
             .then(device => {
                 this.addBluetooth(device);
+                this.linearLoading(false);
             }).catch(exception=>{
                 this.props.dispatch(turnOffBluetooth());
                 this.toggleChecked();
+                this.linearLoading(false);
             })
     }
 

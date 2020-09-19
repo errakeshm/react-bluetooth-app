@@ -2,7 +2,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Card, CardContent, Grid,
 import { ExpandMore } from '@material-ui/icons';
 import React from 'react';
 import { connect } from 'react-redux'
-import { setStatus } from '../actions/application.action';
+import { contentLoadInProgress, contentLoadNotInProgress, setStatus } from '../actions/application.action';
 import { ERROR, SUCCESS } from '../constants/application.constants';
 import { BluetoothAPI, BluetoothDevice } from '../utils/bluetooth';
 import { toCamelCase } from '../utils/string-helper';
@@ -69,6 +69,13 @@ class GeneralBluetoothInfo extends React.Component {
         this.bluetoothAPI = new BluetoothAPI();
     }
 
+    linearLoading = (flag) => {
+        if(flag){
+            this.props.dispatch(contentLoadInProgress());
+        } else{
+            this.props.dispatch(contentLoadNotInProgress());
+        }
+    }
     getBluetoothDevice = () => {
         // Check if bluetooth is enabled, if not enabled dont render anything
         if (!this.props.bluetoothStatus)
@@ -79,8 +86,10 @@ class GeneralBluetoothInfo extends React.Component {
                 .then(device => {
                     this.setState({ bluetoothDevice: device });
                     this.props.dispatch(setStatus(SUCCESS, "Device has been paired"));
+                    this.linearLoading(false);
                 }).catch(err => {
                     this.props.dispatch(setStatus(ERROR, err.message));
+                    this.linearLoading(false);
                 });
         }
 

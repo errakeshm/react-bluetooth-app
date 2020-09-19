@@ -1,11 +1,12 @@
-import { STATUS_SET, STATUS_UNSET } from '../constants/action.types';
+import { STATUS_SET, STATUS_UNSET, CONTENT_LOAD_INPROGRESS, CONTENT_LOAD_NOTINPROGRESS } from '../constants/action.types';
 
 const initialState = {
     status : {
         code : null,
         message : null,
         flag : false
-    }
+    },
+    contentLoadInProgress: false
 }
 
 export function applicationReducer(state = initialState, action) {
@@ -16,6 +17,10 @@ export function applicationReducer(state = initialState, action) {
             const newStatus = Object.assign({}, state.status);
             newStatus.flag = false;
             return { ...state, status: newStatus}
+        case CONTENT_LOAD_INPROGRESS:
+            return { ...state, contentLoadInProgress: true }
+        case CONTENT_LOAD_NOTINPROGRESS:
+            return { ...state, contentLoadInProgress: false }
         default:
             break;
     }

@@ -1,4 +1,4 @@
-import { Snackbar, withStyles } from '@material-ui/core';
+import { LinearProgress, Snackbar, withStyles } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import { Alert } from '@material-ui/lab';
 import React from 'react';
@@ -22,11 +22,20 @@ class Home extends React.Component {
             <div className="Header">
                 <Header></Header>
                 <div className="body">
+                    { this.showLinearProgress() }
                     <GeneralBluetoothInfo></GeneralBluetoothInfo>
                 </div>
                 { this.constructSnackbarMessage(classes)}
             </div>
         )
+    }
+
+    showLinearProgress = () => {
+        console.log(this.props.contentLoadInProgress)
+        if(this.props.contentLoadInProgress){
+            return <LinearProgress />
+        }
+        return;
     }
 
     handleCLose = () => {
@@ -46,5 +55,5 @@ class Home extends React.Component {
     }
 }
 
-const mapStateToProps = state => ({ status: state.applicationReducer.status })
+const mapStateToProps = state => ({ status: state.applicationReducer.status, contentLoadInProgress: state.applicationReducer.contentLoadInProgress })
 export default withStyles(useStyles)(connect(mapStateToProps)(Home));
