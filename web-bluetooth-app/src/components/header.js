@@ -88,7 +88,7 @@ class Header extends React.Component {
                         {/* <IconButton className={classes.menuButton} edge="start" color="inherit" aria-label="menu">
                             <Menu />
                         </IconButton> */}
-                        <Typography variant="h6" className={classes.title}>React Bluetooth POC</Typography>
+                        <Typography variant="h6" className={classes.title}>BLE Web Controller</Typography>
                         <FormGroup>
                             <FormControlLabel
                                 control={<Switch checked={this.state.checked} onChange={this.toggleChecked}></Switch>}
