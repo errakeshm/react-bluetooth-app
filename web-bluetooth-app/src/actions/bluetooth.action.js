@@ -4,18 +4,21 @@ const addBluetoothDevice = (payload) => {
         return { type : ADD_BLUETOOTH, payload };
 }
 
-const loadBluetoothDevice = (payload) => {
+const loadBluetoothDevice = () => {
         return { type : LOAD_BLUETOOTH };
 }
 
-const removeBluetoothDevice = (payload) => {
+const removeBluetoothDevice = () => {
         return { type : REMOVE_BLUETOOTH };
 }
 
-const turnOnBluetooth = (payload) => {
+const turnOnBluetooth = () => {
         return { type : CHECKED };
 }
 
-const turnOffBluetooth = (payload) => {
+const turnOffBluetooth = () => {
         return { type : UNCHECKED };
 }
+
+
+export { addBluetoothDevice, loadBluetoothDevice, removeBluetoothDevice, turnOnBluetooth, turnOffBluetooth };

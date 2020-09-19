@@ -1,9 +1,8 @@
 import React from 'react';
-import { AppBar, IconButton, Toolbar, Typography, withStyles } from '@material-ui/core';
-import Menu from '@material-ui/icons/Menu';
+import { AppBar, Toolbar, Typography, withStyles } from '@material-ui/core';
 import { FormControlLabel, FormGroup, Switch } from '@material-ui/core';
 import { RequestOption, BluetoothAPI, REQUEST_OPTION_NAME } from '../utils/bluetooth';
-import { ADD_BLUETOOTH, CHECKED, REMOVE_BLUETOOTH, UNCHECKED } from '../constants/action.types';
+import { addBluetoothDevice, turnOnBluetooth, turnOffBluetooth, removeBluetoothDevice } from '../actions/bluetooth.action';
 import { connect } from 'react-redux';
 
 const useStyles = theme => ({
@@ -29,14 +28,14 @@ class Header extends React.Component {
         this.bluetoothAPI = new BluetoothAPI();
     }
     
-    add = (bluetooth) => {
-        this.props.dispatch({type : ADD_BLUETOOTH, payload: bluetooth});   
-        this.props.dispatch({type : CHECKED });
+    addBluetooth = (bluetooth) => {
+        this.props.dispatch(addBluetoothDevice(bluetooth));   
+        this.props.dispatch(turnOnBluetooth());
     }
 
-    remove = (bluetooth) => {
-        this.props.dispatch({type : REMOVE_BLUETOOTH })
-        this.props.dispatch({type : UNCHECKED })
+    removeBluetooth = (bluetooth) => {
+        this.props.dispatch(removeBluetoothDevice())
+        this.props.dispatch(turnOffBluetooth())
     }
     
     toggleChecked = () => {
@@ -44,7 +43,7 @@ class Header extends React.Component {
             if (this.state.checked) {
                 this.requestDevice();
             } else{
-                this.remove();
+                this.removeBluetooth();
             }
         });
     }
@@ -52,9 +51,9 @@ class Header extends React.Component {
     requestDevice = () => {
         this.bluetoothAPI.requestDevice(new RequestOption(REQUEST_OPTION_NAME.ALL))
             .then(device => {
-                this.add(device);
+                this.addBluetooth(device);
             }).catch(exception=>{
-                this.props.dispatch({type : UNCHECKED });
+                this.props.dispatch(turnOffBluetooth());
                 this.toggleChecked();
             })
     }
@@ -65,9 +64,9 @@ class Header extends React.Component {
             <div>
                 <AppBar position="static" className={classes.root}>
                     <Toolbar>
-                        <IconButton className={classes.menuButton} edge="start" color="inherit" aria-label="menu">
+                        {/* <IconButton className={classes.menuButton} edge="start" color="inherit" aria-label="menu">
                             <Menu />
-                        </IconButton>
+                        </IconButton> */}
                         <Typography variant="h6" className={classes.title}>React Bluetooth POC</Typography>
                         <FormGroup>
                             <FormControlLabel
