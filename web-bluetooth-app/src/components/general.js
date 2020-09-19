@@ -2,8 +2,8 @@ import { Card, CardContent, Grid, Paper, Table, TableBody, TableCell, TableConta
 import React from 'react';
 import { connect } from 'react-redux'
 import { setStatus } from '../actions/application.action';
-import { SUCCESS } from '../constants/application.constants';
-import { BluetoothDevice } from '../utils/bluetooth';
+import { ERROR, SUCCESS } from '../constants/application.constants';
+import { BluetoothAPI, BluetoothDevice } from '../utils/bluetooth';
 import { toCamelCase } from '../utils/string-helper';
 
 const useStyles = (theme) => ({
@@ -27,16 +27,16 @@ const useStyles = (theme) => ({
         padding: 0,
         paddingTop: theme.spacing(2)
     },
-    messageCard : {
+    messageCard: {
         width: '40%',
         textAlign: 'center'
     },
-    messageCardContent : {
+    messageCardContent: {
         backgroundColor: "#DCDCDC",
         padding: theme.spacing(2),
-        fontWeight:'600',
-        height:'4rem',
-        justifyContent:'center',
+        fontWeight: '600',
+        height: '4rem',
+        justifyContent: 'center',
     },
     table: {
         minWidth: '100%',
@@ -49,14 +49,14 @@ const useStyles = (theme) => ({
     cardContainer: {
         margin: theme.spacing(2)
     },
-    fullContainer : {
-        width:'100%'
+    fullContainer: {
+        width: '100%'
     },
-    alignCenter : {
-        display:'flex',
-        justifyContent:'center',
-        verticalAlign:'middle',
-        textAlign:'center'
+    alignCenter: {
+        display: 'flex',
+        justifyContent: 'center',
+        verticalAlign: 'middle',
+        textAlign: 'center'
     }
 })
 class GeneralBluetoothInfo extends React.Component {
@@ -65,6 +65,7 @@ class GeneralBluetoothInfo extends React.Component {
         this.state = {
             bluetoothDevice: new BluetoothDevice()
         }
+        this.bluetoothAPI = new BluetoothAPI();
     }
 
     getBluetoothDevice = () => {
@@ -73,31 +74,12 @@ class GeneralBluetoothInfo extends React.Component {
             return;
 
         if (this.props.device !== undefined && this.props.device !== null && !this.props.device.gatt.connected) {
-            this.props.device.gatt.connect()
-                .then(server => {
-                    return server.getPrimaryServices()
-                })
-                .then(services => {
-                    services.forEach(service => {
-                        service.getCharacteristics().then(characteristics => {
-                            let bluetoothDevice = new BluetoothDevice();
-                            bluetoothDevice.put("general", "id", this.props.device.id);
-                            bluetoothDevice.put("general", "name", this.props.device.name);
-                            bluetoothDevice.put("characteristics", "uuid", service.uuid);
-                            bluetoothDevice.put("characteristics", "isPrimary", "" + service.isPrimary);
-                            characteristics.forEach(characteristic => {
-                                for (const property in characteristic.properties) {
-                                    bluetoothDevice.put("properties", property, "" + characteristic.properties[property]);
-                                }
-                            });
-                            console.log('Yes')
-                            this.setState({ bluetoothDevice: bluetoothDevice });
-                            this.props.dispatch(setStatus(SUCCESS, "Device has been paired" ))
-                        });
-                    });
-                    return services;
+            this.bluetoothAPI.getAllProperties(this.props.device)
+                .then(device => {
+                    this.setState({ bluetoothDevice: device });
+                    this.props.dispatch(setStatus(SUCCESS, "Device has been paired"))
                 }).catch(err => {
-                    console.error(err);
+                    this.props.dispatch(setStatus(ERROR, err.message));
                 });
         }
     }
@@ -176,7 +158,7 @@ class GeneralBluetoothInfo extends React.Component {
         return (
             <div className={classes.root}>
                 <div className={`${classes.fullContainer} ${classes.alignCenter}`}>
-                    { this.constructNoDeviceConnected(classes)}
+                    {this.constructNoDeviceConnected(classes)}
                 </div>
                 <Grid container spacing={3}>
                     <Grid item lg={4} md={6} sm={12}>
@@ -199,10 +181,10 @@ class GeneralBluetoothInfo extends React.Component {
 
 }
 
-const mapStateToProps = state => ({ 
-    device: state.bluetoothReducer.device, 
+const mapStateToProps = state => ({
+    device: state.bluetoothReducer.device,
     bluetoothStatus: state.bluetoothReducer.bluetoothStatus,
-    status : state.applicationReducer.status
+    status: state.applicationReducer.status
 })
 
 export default withStyles(useStyles)(connect(mapStateToProps)(GeneralBluetoothInfo));
