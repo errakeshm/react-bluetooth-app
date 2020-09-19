@@ -2,10 +2,10 @@ import { Accordion, AccordionDetails, AccordionSummary, Card, CardContent, Grid,
 import { ExpandMore } from '@material-ui/icons';
 import React from 'react';
 import { connect } from 'react-redux'
-import { contentLoadInProgress, contentLoadNotInProgress, setStatus } from '../actions/application.action';
-import { ERROR, SUCCESS } from '../constants/application.constants';
-import { BluetoothAPI, BluetoothDevice } from '../utils/bluetooth';
-import { toCamelCase } from '../utils/string-helper';
+import { contentLoadInProgress, contentLoadNotInProgress, setStatus } from '../../actions/application.action';
+import { ERROR, SUCCESS } from '../../constants/application.constants';
+import { BluetoothAPI, BluetoothDevice } from '../../utils/bluetooth';
+import { toCamelCase } from '../../utils/string-helper';
 
 const useStyles = (theme) => ({
     root: {
@@ -58,8 +58,12 @@ const useStyles = (theme) => ({
     accordionHeading: {
         fontSize: '1rem',
         fontWeight:'bold'
-      },
-})
+    },
+    orangeBackground: {
+        backgroundColor: 'orange'
+    }
+});
+
 class GeneralBluetoothInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -177,7 +181,7 @@ class GeneralBluetoothInfo extends React.Component {
                 <div className={` ${classes.alignCenter}`}>
                     {this.constructNoDeviceConnected(classes)}
                 </div>
-                <Accordion style={{display : this.props.bluetoothStatus ? 'block' : 'none'}}>
+                <Accordion className={classes.orangeBackground} style={{display : this.props.bluetoothStatus ? 'block' : 'none'}}>
                     <AccordionSummary expandIcon={<ExpandMore/>}>
                         <Typography className={classes.accordionHeading}>Bluetooth Device Information</Typography>
                     </AccordionSummary>

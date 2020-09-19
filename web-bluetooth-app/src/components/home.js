@@ -4,9 +4,9 @@ import { Alert } from '@material-ui/lab';
 import React from 'react';
 import { connect } from 'react-redux';
 import { unsetStatus } from '../actions/application.action';
-import GeneralBluetoothInfo from './general';
+import GeneralBluetoothInfo from './information/general';
 import Header from './header';
-
+import Demo from './demo/home.demo';
 
 const useStyles = (theme) => ({
     statusMessage : {
@@ -24,6 +24,7 @@ class Home extends React.Component {
                 <div className="body">
                     { this.showLinearProgress() }
                     <GeneralBluetoothInfo></GeneralBluetoothInfo>
+                    <Demo></Demo>
                 </div>
                 { this.constructSnackbarMessage(classes)}
             </div>
