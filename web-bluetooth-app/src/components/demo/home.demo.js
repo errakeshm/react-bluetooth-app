@@ -2,7 +2,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Grid, Typography, withSt
 import { ExpandMore } from '@material-ui/icons';
 import React from 'react';
 import { connect } from 'react-redux';
-import YoutubeDemo from './youtube.demo';
+import YoutubeVideoControlDemo from './youtube.demo';
 
 
 const useStyles = (theme) => ({
@@ -13,7 +13,12 @@ const useStyles = (theme) => ({
 
     lightgreenBackground: {
         backgroundColor: 'lightgreen'
-    }
+    },
+    
+    accordionHeading: {
+        fontSize: '1rem',
+        fontWeight:'bold'
+    },
 });
 
 class Demo extends React.Component {
@@ -24,11 +29,11 @@ class Demo extends React.Component {
             <div className={classes.root}>
                 <Accordion className={classes.lightgreenBackground} style={{display : this.props.bluetoothStatus ? 'block' : 'none'}}>
                     <AccordionSummary expandIcon={<ExpandMore/>}>
-                        <Typography className={classes.accordionHeading}>Demo Application</Typography>
+                        <Typography className={classes.accordionHeading}>Youtube Demo Controller Application</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                         <Grid container spacing={3}>
-                            <YoutubeDemo></YoutubeDemo>
+                            <YoutubeVideoControlDemo></YoutubeVideoControlDemo>
                         </Grid>
                     </AccordionDetails>
                 </Accordion>

@@ -90,6 +90,16 @@ class BluetoothAPI {
                 return devicePromise;
             });
     }
+
+    getNotification(bluetoothDevice) {
+        return bluetoothDevice.gatt.connect()
+            .then(server => {
+                return server.getPrimaryService("battery_service")
+            })
+            .then(service => {
+                return service.getCharacteristic("battery_level");
+            });
+    }
 }
 
 export { RequestOption, BluetoothAPI, BluetoothDevice };
